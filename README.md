@@ -43,10 +43,7 @@ data used:
 
 ### Model that have been trained
 
-Download trained models from [xzyschumacher/CSV-Filter (github.com)](https://github.com/xzyschumacher/CSV-Filter)
-
-
-
+Download trained models from [Releases · xzyschumacher/CSV-Filter (github.com)](https://github.com/xzyschumacher/CSV-Filter/releases)
 
 ### Environment by using anaconda and pip
 
