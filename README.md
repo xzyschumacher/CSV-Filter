@@ -52,8 +52,11 @@ Download trained models from [xzyschumacher/CSV-Filter (github.com)](https://git
 
 #### Install Ubuntu support environment
 apt: `$ sudo apt-get update`
+
 gcc: `$ sudo apt-get install gcc`
+
 g++: `$ sudo apt-get install g++`
+
 vim: `$ sudo apt-get install vim`
 
 #### Install drivers
