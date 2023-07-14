@@ -58,20 +58,24 @@ vim: `$ sudo apt-get install vim`
 
 #### Install drivers
 show GPU version and recommended drivers: 
+
 `$ ubuntu-drivers devices`
 
 install recommended drivers:
+
 `$ sudo apt install nvidia-470`
 
 `$ reboot`
 
 test: 
+
 `$ nvidia-smi`
 
 #### Install CUDA
 CUDA Toolkit Archive：https://developer.nvidia.com/cuda-toolkit-archive
 
 download CUDA Toolkit 11.3.1: 
+
 `$ wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run`
 
 run: 
@@ -86,6 +90,7 @@ export PATH=/usr/local/cuda-11.3/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 refresh environment variables:
+
 `$ source ~/.bashrc`
 
 test: 
