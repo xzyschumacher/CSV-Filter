@@ -81,7 +81,9 @@ download CUDA Toolkit 11.3.1:
 run: `$ sudo sh cuda_11.3.1_465.19.01_linux.run`
 
 `$ accept`
+
 `$ Continue`
+
 `$ Install`
 
 Modify environment variables:
@@ -94,6 +96,7 @@ refresh environment variables:
 `$ source ~/.bashrc`
 
 test: 
+
 `$ nvcc -V`
 
 run test program:
