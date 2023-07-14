@@ -100,61 +100,80 @@ $ ./bandwidthTest
 
 #### Install Anaconda
 download Anaconda:
+
 `$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.11-Linux-x86_64.sh`
 
 run:
+
 `$ bash Anaconda3-2021.11-Linux-x86_64.sh`
 `$ yes`
 
 **default direction: /home/username/anaconda3**
+
 Modify environment variables:
 ```python
 export PATH=”/home/username/anaconda3/bin:$PATH”
 ```
 refresh environment variables: 
+
 `$ source ~/.bashrc`
 
 test: 
+
 `$ conda --version`
 
 #### Create CSV-Filter environment
+
 create a new environment: 
+
 `$ conda create -n MSVF python=3.6 -y`
 
 activate CSV-Filter environment: 
+
 `$ conda activate csv-filter`
 
 install pytorch/cudatoolkit/torchvision/torchaudio/pytorch: 
+
 `$ conda install pytorch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 cudatoolkit==11.3.1 -c pytorch -y`
 
 install pytorch-lightning: 
+
 `$ conda install pytorch-lightning=1.5.10 -c conda-forge -y`
 
 install ray:
+
 `$ pip install ray[tune]==1.6.0`
 
 install redis:
+
 `$ conda install redis -y`
 
 install scikit-learn:
+
 `$ conda install scikit-learn -y`
 
 install matplotlib:
+
 `$ conda install matplotlib -y`
 
 install pudb:
+
 `$ pip install pudb`
 
 install samtools:
+
 `$ conda install samtools -c bioconda`
 
 install hyperopt:
+
 `$ pip install hyperopt`
 
 install pysam:
+
 `$ pip install pysam==0.15.4`
 
 install parallel:
+
 `$ sudo apt install parallel`
 
 ## Usage
@@ -171,23 +190,29 @@ $ python simple_train.py selected_model
 `$ cd data`
 
 get BAM file:
+
 `$ wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/sorted_final_merged.bam`
 
-parallel index BAM file
+parallel index BAM file：
+
 `$ parallel samtools index ::: *.bam`
 
 get VCF file:
+
 `$ wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/NA12878.sorted.vcf.gz`
 
 umcompess VCF gz file:
+
 `$ tar -xzvf NA12878.sorted.vcf.gz`
 
 `$ cd ../src`
 
 vcf data preprocess:
+
 `$ python vcf_data_process.py`
 
 BAM data preprocess:
+
 `$ python bam2depth.py`
 
 parallel generate images:
@@ -197,9 +222,11 @@ $ python parallel_process_file.py --thread_num thread_num
 ```
 
 check generated images:
+
 `$ python process_file_check.py`
 
 rearrange generated images:
+
 `$ python data_spread.py`
 
 train:
