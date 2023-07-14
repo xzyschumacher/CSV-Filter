@@ -78,8 +78,8 @@ download CUDA Toolkit 11.3.1:
 
 `$ wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run`
 
-run: 
-`$ sudo sh cuda_11.3.1_465.19.01_linux.run`
+run: `$ sudo sh cuda_11.3.1_465.19.01_linux.run`
+
 `$ accept`
 `$ Continue`
 `$ Install`
@@ -108,9 +108,8 @@ download Anaconda:
 
 `$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.11-Linux-x86_64.sh`
 
-run:
+run:`$ bash Anaconda3-2021.11-Linux-x86_64.sh`
 
-`$ bash Anaconda3-2021.11-Linux-x86_64.sh`
 `$ yes`
 
 **default direction: /home/username/anaconda3**
