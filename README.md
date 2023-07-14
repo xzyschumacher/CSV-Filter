@@ -237,6 +237,7 @@ rearrange generated images:
 `$ python data_spread.py`
 
 train:
+
 `$ python train.py`
 
 ### Predict & Filter
