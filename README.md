@@ -211,7 +211,7 @@ get VCF file:
 
 `$ wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/NA12878.sorted.vcf.gz`
 
-umcompess VCF gz file:
+uncompress VCF gz file:
 
 `$ tar -xzvf NA12878.sorted.vcf.gz`
 
