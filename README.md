@@ -35,7 +35,15 @@ CSV-Filter is tested to work under:
 
 ### Datasets
 
-Download all dataset from [Index of /giab/ftp/data/NA12878/NA12878_PacBio_MtSinai (nih.gov)](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/)
+#### HG002
+
+* [Tier1 benchmark SV callset and high-confidence HG002 region](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/)
+
+* PacBio CLR [PacBio CLR]()
+
+#### NA12878
+
+* NA12878: [Index of /giab/ftp/data/NA12878/NA12878_PacBio_MtSinai (nih.gov)](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/)
 
 data used:
 * NA12878.sorted.vcf.gz
