@@ -37,9 +37,11 @@ CSV-Filter is tested to work under:
 
 #### HG002
 
-* [Tier1 benchmark SV callset and high-confidence HG002 region](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/)
-
-* PacBio CLR [PacBio CLR]()
+* VCF [Tier1 benchmark SV callset and high-confidence HG002 region](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/)
+* PacBio CLR [PacBio 70x (CLR)](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_MtSinai_NIST/)
+* PacBio HiFi [PacBio CCS 15kb\_20kb chemistry2 (HiFi)](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_CCS_15kb_20kb_chemistry2/reads/)
+* ONT [Oxford Nanopore ultralong (guppy-V3.2.4\_2020-01-22)](ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/guppy-V3.2.4_2020-01-22/HG002_ONT-UL_GIAB_20200122.fastq.gz)
+* Illumina [Illumina data](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/NHGRI_Illumina300X_AJtrio_novoalign_bams/HG002.hs37d5.60x.1.bam)
 
 #### NA12878
 
