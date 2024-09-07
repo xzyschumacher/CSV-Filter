@@ -76,8 +76,9 @@ vim: `$ sudo apt-get install vim`
 
 #### Install drivers
 show GPU version and recommended drivers: 
-
-`$ ubuntu-drivers devices`
+```bash
+$ ubuntu-drivers devices
+```
 
 install recommended drivers:
 
