@@ -247,65 +247,74 @@ python simple_train.py selected_model
 ```
 
 ### Train
-
-`$ cd data`
+```bash
+cd data
+```
 
 get BAM file:
-
-`$ wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/sorted_final_merged.bam`
+```bash
+wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/sorted_final_merged.bam
+```
 
 parallel index BAM file：
-
-`$ parallel samtools index ::: *.bam`
+```bash
+parallel samtools index ::: *.bam
+```
 
 get VCF file:
-
-`$ wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/NA12878.sorted.vcf.gz`
+```bash
+wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/NA12878.sorted.vcf.gz
+```
 
 uncompress VCF gz file:
-
-`$ tar -xzvf NA12878.sorted.vcf.gz`
-
-`$ cd ../src`
+```bash
+tar -xzvf NA12878.sorted.vcf.gz
+cd ../src
+```
 
 vcf data preprocess:
-
-`$ python vcf_data_process.py`
+```bash
+python vcf_data_process.py
+```
 
 BAM data preprocess:
-
-`$ python bam2depth.py`
+```bash
+python bam2depth.py
+```
 
 parallel generate images:
 ```
-$ python parallel_process_file.py --thread_num thread_num  
-($ python parallel_process_file.py --thread_num 16)
+python parallel_process_file.py --thread_num thread_num  
+(python parallel_process_file.py --thread_num 16)
 ```
 
 check generated images:
-
-`$ python process_file_check.py`
+```bash
+python process_file_check.py
+```
 
 rearrange generated images:
-
-`$ python data_spread.py`
+```bash
+python data_spread.py
+```
 
 train:
-
-`$ python train.py`
+```bash
+python train.py
+```
 
 ### Predict & Filter
 
 predict:
 ```
-$ python predict.py selected_model
-(e.g. $ python predict.py resnet50)
+python predict.py selected_model
+(e.g. python predict.py resnet50)
 ```
 
 filter:
 ```
-$ python filter.py selected_model
-(e.g. $ python filter.py resnet50)
+python filter.py selected_model
+(e.g. python filter.py resnet50)
 ```
 
 ### Switch model to train
