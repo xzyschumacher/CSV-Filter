@@ -66,44 +66,70 @@ Download trained models from [Releases · xzyschumacher/CSV-Filter (github.com)]
 ### Environment by using anaconda and pip
 
 #### Install Ubuntu support environment
-apt: `$ sudo apt-get update`
+apt: 
+```bash
+sudo apt-get update
+```
 
-gcc: `$ sudo apt-get install gcc`
+gcc: 
+```bash
+sudo apt-get install gcc
+```
 
-g++: `$ sudo apt-get install g++`
+g++: 
+```bash
+sudo apt-get install g++
+```
 
-vim: `$ sudo apt-get install vim`
+vim: 
+```bash
+sudo apt-get install vim
+```
 
 #### Install drivers
 show GPU version and recommended drivers: 
 ```bash
-$ ubuntu-drivers devices
+ubuntu-drivers devices
 ```
 
 install recommended drivers:
+```bash
+sudo apt install nvidia-470
+```
 
-`$ sudo apt install nvidia-470`
-
-`$ reboot`
+```bash
+reboot
+```
 
 test: 
-
-`$ nvidia-smi`
+```bash
+nvidia-smi
+```
 
 #### Install CUDA
 CUDA Toolkit Archive：https://developer.nvidia.com/cuda-toolkit-archive
 
 download CUDA Toolkit 11.3.1: 
+```bash
+wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run
+```
 
-`$ wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run`
+run: 
+```bash
+sudo sh cuda_11.3.1_465.19.01_linux.run
+```
 
-run: `$ sudo sh cuda_11.3.1_465.19.01_linux.run`
+```bash
+accept
+```
 
-`$ accept`
+```bash
+Continue
+```
 
-`$ Continue`
-
-`$ Install`
+```bash
+Install
+```
 
 Modify environment variables:
 ```python
