@@ -95,11 +95,7 @@ ubuntu-drivers devices
 install recommended drivers:
 ```bash
 sudo apt install nvidia-470
-```
-
-```bash
 reboot
-```
 
 test: 
 ```bash
@@ -117,17 +113,8 @@ wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/
 run: 
 ```bash
 sudo sh cuda_11.3.1_465.19.01_linux.run
-```
-
-```bash
 accept
-```
-
-```bash
 Continue
-```
-
-```bash
 Install
 ```
 
@@ -137,28 +124,33 @@ export PATH=/usr/local/cuda-11.3/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 refresh environment variables:
-
-`$ source ~/.bashrc`
+```bash
+source ~/.bashrc
+```
 
 test: 
-
-`$ nvcc -V`
+```bash
+nvcc -V
+```
 
 run test program:
-```
-$ cd ~/NVIDIA_CUDA-11.3_Samples/1_Utilities/bandwidthTest
-$ make
-$ ./bandwidthTest
+```bash
+cd ~/NVIDIA_CUDA-11.3_Samples/1_Utilities/bandwidthTest
+make
+./bandwidthTest
 ```
 
 #### Install Anaconda
 download Anaconda:
+```bash
+wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.11-Linux-x86_64.sh
+```
 
-`$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.11-Linux-x86_64.sh`
-
-run:`$ bash Anaconda3-2021.11-Linux-x86_64.sh`
-
-`$ yes`
+run:
+```bash
+bash Anaconda3-2021.11-Linux-x86_64.sh
+yes
+```
 
 **default direction: /home/username/anaconda3**
 
