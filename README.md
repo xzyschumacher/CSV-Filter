@@ -159,75 +159,91 @@ Modify environment variables:
 ```python
 export PATH=”/home/username/anaconda3/bin:$PATH”
 ```
-refresh environment variables: 
 
-`$ source ~/.bashrc`
+refresh environment variables: 
+```bash
+source ~/.bashrc`
+```
 
 test: 
-
-`$ conda --version`
+```bash
+conda --version`
+```
 
 #### Create CSV-Filter environment
 
 create a new environment: 
-
-`$ conda create -n MSVF python=3.6 -y`
+```bash
+conda create -n MSVF python=3.6 -y
+```
 
 activate CSV-Filter environment: 
-
-`$ conda activate csv-filter`
+```bash
+conda activate csv-filter
+```
 
 install pytorch/cudatoolkit/torchvision/torchaudio/pytorch: 
-
-`$ conda install pytorch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 cudatoolkit==11.3.1 -c pytorch -y`
+```bash
+conda install pytorch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 cudatoolkit==11.3.1 -c pytorch -y
+```
 
 install pytorch-lightning: 
-
-`$ conda install pytorch-lightning=1.5.10 -c conda-forge -y`
+```bash
+conda install pytorch-lightning=1.5.10 -c conda-forge -y
+```
 
 install ray:
-
-`$ pip install ray[tune]==1.6.0`
+```bash
+pip install ray[tune]==1.6.0
+```
 
 install redis:
-
-`$ conda install redis -y`
+```bash
+conda install redis -y
+```
 
 install scikit-learn:
-
-`$ conda install scikit-learn -y`
+```bash
+conda install scikit-learn -y
+```
 
 install matplotlib:
-
-`$ conda install matplotlib -y`
+```bash
+conda install matplotlib -y
+```
 
 install pudb:
-
-`$ pip install pudb`
+```bash
+pip install pudb
+```
 
 install samtools:
-
-`$ conda install samtools -c bioconda`
+```bash
+conda install samtools -c bioconda
+```
 
 install hyperopt:
-
-`$ pip install hyperopt`
+```bash
+pip install hyperopt
+```
 
 install pysam:
-
-`$ pip install pysam==0.15.4`
+```bash
+pip install pysam==0.15.4
+```
 
 install parallel:
-
-`$ sudo apt install parallel`
+```bash
+sudo apt install parallel
+```
 
 ## Usage
 
 ### Simple train
 
 ```
-$ python simple_train.py selected_model
-($ python simple_train.py resnet50)
+python simple_train.py selected_model
+(python simple_train.py resnet50)
 ```
 
 ### Train
