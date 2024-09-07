@@ -96,6 +96,7 @@ install recommended drivers:
 ```bash
 sudo apt install nvidia-470
 reboot
+```
 
 test: 
 ```bash
