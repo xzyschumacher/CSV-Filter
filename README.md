@@ -7,7 +7,14 @@ In CSV-Filter, we proposed a novel multi-level grayscale image encoding method b
 The experimental results show that the integration of CSV-Filter with popular second-generation and third-generation SV detection tools could considerably reduce false positive SVs, while maintaining true positive SVs almost unchanged.
 Compared with DeepSVFilter, a SV filtering tool for second-generation sequencing, CSV-Filter can recognize more false positive SVs and supports third-generation sequencing data as an additional feature. 
 
-## Requirements
+## Installation
+
+```bash
+conda env create -f environment.yml
+conda activate csv-filter
+```
+
+## Dependence
 
 CSV-Filter is tested to work under:
 
@@ -31,16 +38,14 @@ CSV-Filter is tested to work under:
 * torchvision 1.10.2
 * tensroboard 2.11.2 
 
-## Quick start
+## Datasets
 
-### Datasets
-
-#### Reference
+### Reference
 
 * GRCh37: [https://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz](https://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz)
 * hs37d5: [https://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz](https://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz)
 
-#### HG002
+### HG002
 
 * Tier1 benchmark SV callset and high-confidence HG002 region: [https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/)
 * PacBio 70x (CLR): [https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_MtSinai_NIST/](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_MtSinai_NIST/)
@@ -48,7 +53,7 @@ CSV-Filter is tested to work under:
 * Oxford Nanopore ultralong (guppy-V3.2.4\_2020-01-22): [ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/guppy-V3.2.4_2020-01-22/HG002_ONT-UL_GIAB_20200122.fastq.gz](ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/guppy-V3.2.4_2020-01-22/HG002_ONT-UL_GIAB_20200122.fastq.gz)
 * NHGRI_Illumina300X_AJtrio_novoalign_bams: [https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/NHGRI_Illumina300X_AJtrio_novoalign_bams/HG002.hs37d5.60x.1.bam](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/NHGRI_Illumina300X_AJtrio_novoalign_bams/HG002.hs37d5.60x.1.bam)
 
-#### NA12878
+### NA12878
 
 * NA12878: [Index of /giab/ftp/data/NA12878/NA12878_PacBio_MtSinai (nih.gov)](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/)
 
@@ -59,218 +64,15 @@ data used:
 * sorted_final_merged.bam.bai
 * corrected_reads_gt4kb.fasta 
 
-### Model that have been trained
+## Model that have been trained
 
 Download trained models from [Releases · xzyschumacher/CSV-Filter (github.com)](https://github.com/xzyschumacher/CSV-Filter/releases)
 
-### Environment by using anaconda and pip
-
-#### Install Ubuntu support environment
-apt: 
-```bash
-sudo apt-get update
-```
-
-gcc: 
-```bash
-sudo apt-get install gcc
-```
-
-g++: 
-```bash
-sudo apt-get install g++
-```
-
-vim: 
-```bash
-sudo apt-get install vim
-```
-
-#### Install drivers
-show GPU version and recommended drivers: 
-```bash
-ubuntu-drivers devices
-```
-
-install recommended drivers:
-```bash
-sudo apt install nvidia-470
-reboot
-```
-
-test: 
-```bash
-nvidia-smi
-```
-
-#### Install CUDA
-CUDA Toolkit Archive：https://developer.nvidia.com/cuda-toolkit-archive
-
-download CUDA Toolkit 11.3.1: 
-```bash
-wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run
-```
-
-run: 
-```bash
-sudo sh cuda_11.3.1_465.19.01_linux.run
-accept
-Continue
-Install
-```
-
-Modify environment variables:
-```python
-export PATH=/usr/local/cuda-11.3/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-```
-refresh environment variables:
-```bash
-source ~/.bashrc
-```
-
-test: 
-```bash
-nvcc -V
-```
-
-run test program:
-```bash
-cd ~/NVIDIA_CUDA-11.3_Samples/1_Utilities/bandwidthTest
-make
-./bandwidthTest
-```
-
-#### Install Anaconda
-download Anaconda:
-```bash
-wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.11-Linux-x86_64.sh
-```
-
-run:
-```bash
-bash Anaconda3-2021.11-Linux-x86_64.sh
-yes
-```
-
-**default direction: /home/username/anaconda3**
-
-Modify environment variables:
-```python
-export PATH=”/home/username/anaconda3/bin:$PATH”
-```
-
-refresh environment variables: 
-```bash
-source ~/.bashrc`
-```
-
-test: 
-```bash
-conda --version`
-```
-
-#### Create CSV-Filter environment
-
-create a new environment: 
-```bash
-conda create -n MSVF python=3.6 -y
-```
-
-activate CSV-Filter environment: 
-```bash
-conda activate csv-filter
-```
-
-install pytorch/cudatoolkit/torchvision/torchaudio/pytorch: 
-```bash
-conda install pytorch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 cudatoolkit==11.3.1 -c pytorch -y
-```
-
-install pytorch-lightning: 
-```bash
-conda install pytorch-lightning=1.5.10 -c conda-forge -y
-```
-
-install ray:
-```bash
-pip install ray[tune]==1.6.0
-```
-
-install redis:
-```bash
-conda install redis -y
-```
-
-install scikit-learn:
-```bash
-conda install scikit-learn -y
-```
-
-install matplotlib:
-```bash
-conda install matplotlib -y
-```
-
-install pudb:
-```bash
-pip install pudb
-```
-
-install samtools:
-```bash
-conda install samtools -c bioconda
-```
-
-install hyperopt:
-```bash
-pip install hyperopt
-```
-
-install pysam:
-```bash
-pip install pysam==0.15.4
-```
-
-install parallel:
-```bash
-sudo apt install parallel
-```
-
 ## Usage
 
-### Simple train
-
-```
-python simple_train.py selected_model
-(python simple_train.py resnet50)
-```
-
 ### Train
-```bash
-cd data
-```
 
-get BAM file:
-```bash
-wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/sorted_final_merged.bam
-```
-
-parallel index BAM file：
-```bash
-parallel samtools index ::: *.bam
-```
-
-get VCF file:
-```bash
-wget https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/NA12878.sorted.vcf.gz
-```
-
-uncompress VCF gz file:
-```bash
-tar -xzvf NA12878.sorted.vcf.gz
-cd ../src
-```
+In src file
 
 vcf data preprocess:
 ```bash
