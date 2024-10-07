@@ -72,7 +72,7 @@ Download trained models from [Releases · xzyschumacher/CSV-Filter (github.com)]
 
 ### Train
 
-In src file
+In the src file
 
 vcf data preprocess:
 ```bash
