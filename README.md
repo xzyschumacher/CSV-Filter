@@ -155,3 +155,11 @@ self.softmax = nn.Sequential(
     nn.Softmax(1)
 )
 ```
+
+## Citation
+
+Feel free to read and cite our paper in Bioinformatics: [https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355](https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355).
+
+## Contact
+
+For advising, bug reporting and requiring help, please contact [yingbocui@nudt.edu.cn](yingbocui@nudt.edu.cn).
