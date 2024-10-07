@@ -57,13 +57,6 @@ CSV-Filter is tested to work under:
 
 * NA12878: [Index of /giab/ftp/data/NA12878/NA12878_PacBio_MtSinai (nih.gov)](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NA12878_PacBio_MtSinai/)
 
-data used:
-* NA12878.sorted.vcf.gz
-* NA12878.sorted.vcf.gz.tbi
-* sorted_final_merged.bam
-* sorted_final_merged.bam.bai
-* corrected_reads_gt4kb.fasta 
-
 ## Model that have been trained
 
 Download trained models from [Releases · xzyschumacher/CSV-Filter (github.com)](https://github.com/xzyschumacher/CSV-Filter/releases)
