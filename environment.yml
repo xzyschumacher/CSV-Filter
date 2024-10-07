@@ -1,0 +1,24 @@
+name: csv-filter
+channels:
+  - pytorch
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.6
+  - pytorch=1.10.2
+  - torchvision=0.11.3
+  - torchaudio=0.10.2
+  - cudatoolkit=11.3.1
+  - pytorch-lightning=1.5.10
+  - redis
+  - scikit-learn
+  - matplotlib
+  - samtools
+  - parallel
+  - pip
+  - pip:
+      - ray[tune]==1.6.0
+      - pudb
+      - hyperopt
+      - pysam==0.15.4
