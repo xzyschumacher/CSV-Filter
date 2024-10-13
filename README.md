@@ -18,12 +18,6 @@ conda activate csv-filter
 
 CSV-Filter is tested to work under:
 
-* Ubuntu 18.04
-* gcc 7.5.0
-* CUDA 11.3
-* cudnn 8200
-* nvidia-smi 470.182.03
-* Anoconda 4.10.3
 * Python 3.6
 * pysam 0.15.4
 * pytorch 1.10.2 
