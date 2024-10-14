@@ -145,7 +145,7 @@ self.softmax = nn.Sequential(
 
 ## Citation
 
-Feel free to read and cite our paper in Bioinformatics: [https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355](https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355).
+Xia, Zeyu, et al. CSV-Filter: a deep learning-based comprehensive structural variant filtering method for both short and long reads. Bioinformatics 40.9 (2024): btae539. [https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355](https://academic.oup.com/bioinformatics/article/40/9/btae539/7750355).
 
 ## Contact
 
