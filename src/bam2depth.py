@@ -2,16 +2,15 @@ import subprocess
 import os
 from utilities import mymkdir
 
-bam_name = "sorted_final_merged.bam"
+bam_name = "HG002-ONT-minimap2.sorted.bam"
 output_file = "output.depth.txt"
+bam_data_dir = "../data/"
 data_dir = "../data/"
 
-cmd = "samtools depth " + data_dir + bam_name + " > " + data_dir + output_file
+cmd = "samtools depth " + bam_data_dir + bam_name + " > " + data_dir + output_file
 print(cmd)
 print("==== starting samtools deal ====")
 subprocess.call(cmd, shell = True)
-
-# samtools depth sorted_final_merged.bam > output.depth.txt
 
 mymkdir(data_dir + "depth/")
 

@@ -18,15 +18,13 @@ if len(sys.argv) < 2:
     print("usage error!")
     exit()
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 seed_everything(2022)
 
-# data_dir = "../datasets/NA12878_PacBio_MtSinai/"
 root_dir = "../"
 
 config = {
     "lr": 7.1873e-06,
-    "batch_size": 118,  # 14,
+    "batch_size": 118, 
     "beta1": 0.9,
     "beta2": 0.999,
     'weight_decay': 0.0011615,
@@ -75,6 +73,3 @@ data = {'fpr': fpr, 'tpr': tpr, 'roc_auc': roc_auc}
 
 with open('model_result-resnet200x2-self.pickle', 'wb') as handle:
     pickle.dump(data, handle, protocol = pickle.HIGHEST_PROTOCOL)
-
-# with open('model_result-resnet50.pickle', 'wb') as handle:
-#     pickle.dump(data, handle, protocol = pickle.HIGHEST_PROTOCOL)

@@ -24,23 +24,34 @@ from ray.tune.integration.pytorch_lightning import TuneReportCallback, \
 import list2img
 from hyperopt import hp
 
+bam_data_dir = "/media/xzy/HDD_4T_2/DATASETS/Alignment_data/PacBio-CLR/"
+vcf_data_dir = "../data/"
 data_dir = "../data/"
-bam_path = data_dir + "sorted_final_merged.bam"
+bam_path = bam_data_dir + "HG002-PacBio-CLR-minimap2.sorted.bam"
 
-ins_vcf_filename = data_dir + "insert_result_data.csv.vcf"
-del_vcf_filename = data_dir + "delete_result_data.csv.vcf"
+ins_vcf_filename = vcf_data_dir + "insert_result_data.csv.vcf"
+del_vcf_filename = vcf_data_dir + "delete_result_data.csv.vcf"
 
 all_enforcement_refresh = 0
 position_enforcement_refresh = 0
 img_enforcement_refresh = 0
-sign_enforcement_refresh = 0  # attention
+sign_enforcement_refresh = 0 
 cigar_enforcement_refresh = 0
 
-# get chr list
 sam_file = pysam.AlignmentFile(bam_path, "rb")
-chr_list = sam_file.references
-chr_length = sam_file.lengths
+chr_list_sam_file = sam_file.references
+chr_length_sam_file = sam_file.lengths
 sam_file.close()
+
+allowed_chromosomes = set(f"{i}" for i in range(1, 23)) | {"X", "Y"}
+
+chr_list = []
+chr_length = []
+
+for chrom, length in zip(chr_list_sam_file, chr_length_sam_file):
+    if chrom in allowed_chromosomes:
+        chr_list.append(chrom)
+        chr_length.append(length)
 
 hight = 224
 
@@ -155,22 +166,11 @@ else:
                 data_dir + 'image/' + chromosome + '/del_cigar_new_img' + '.pt')
             negative_cigar_img = torch.load(
                 data_dir + 'image/' + chromosome + '/negative_cigar_new_img' + '.pt')
-            # 由于未刷新数据增加的代码
-            # all_p_img0 = positive_cigar_img[:, 0, :, :] + positive_cigar_img[:, 5, :, :]
-            # all_n_img0 = negative_cigar_img[:, 0, :, :] + negative_cigar_img[:, 5, :, :]
-            # positive_cigar_img = torch.cat([all_p_img0.unsqueeze(1), positive_cigar_img[:, 1:3, :, :]], dim = 1)
-            # negative_cigar_img = torch.cat([all_n_img0.unsqueeze(1), negative_cigar_img[:, 1:3, :, :]], dim = 1)
-            # save_path = data_dir + 'image/' + chromosome
-            # torch.save(positive_cigar_img, save_path + '/positive_cigar_img' + '.pt')
-            # torch.save(negative_cigar_img, save_path + '/negative_cigar_img' + '.pt')
-            # end 从头跑程序需注释
         else:
-            # sam_file = pysam.AlignmentFile(bam_path, "rb")
             ins_cigar_img = torch.empty(len(ins_position), 1, hight, hight)
             del_cigar_img = torch.empty(len(del_position), 1, hight, hight)
             negative_cigar_img = torch.empty(len(n_position), 1, hight, hight)
             for i, b_e in enumerate(ins_position):
-                # f positive_cigar_img = torch.cat((positive_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
                 zoom = 1
                 fail = 1
                 while fail:
@@ -183,23 +183,10 @@ else:
                         zoom += 1
                         print(e)
                         print("Exception cigar_img_single_optimal" + str(zoom))
-                #     try:
-                #         positive_cigar_img[i] = ut.cigar_img_single_optimal_time2sapce(sam_file, chromosome, b_e[0], b_e[1])
-                #     except Exception as e:
-                #         print(e)
-                #         print("Exception cigar_img_single_optimal_time2sapce")
-                #         try:
-                #             positive_cigar_img[i] = ut.cigar_img_single_optimal_time3sapce(sam_file, chromosome, b_e[0], b_e[1])
-                #         except Exception as e:
-                #             print(e)
-                #             print("Exception cigar_img_single_optimal_time3sapce")
-                #             positive_cigar_img[i] = ut.cigar_img_single_optimal_time6sapce(sam_file, chromosome, b_e[0], b_e[1])
-
                 print("===== finish(ins_cigar_img) " +
                       chromosome + " " + str(i))
 
             for i, b_e in enumerate(del_position):
-                # f positive_cigar_img = torch.cat((positive_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
                 zoom = 1
                 fail = 1
                 while fail:
@@ -212,22 +199,9 @@ else:
                         zoom += 1
                         print(e)
                         print("Exception cigar_img_single_optimal" + str(zoom))
-                #     try:
-                #         positive_cigar_img[i] = ut.cigar_img_single_optimal_time2sapce(sam_file, chromosome, b_e[0], b_e[1])
-                #     except Exception as e:
-                #         print(e)
-                #         print("Exception cigar_img_single_optimal_time2sapce")
-                #         try:
-                #             positive_cigar_img[i] = ut.cigar_img_single_optimal_time3sapce(sam_file, chromosome, b_e[0], b_e[1])
-                #         except Exception as e:
-                #             print(e)
-                #             print("Exception cigar_img_single_optimal_time3sapce")
-                #             positive_cigar_img[i] = ut.cigar_img_single_optimal_time6sapce(sam_file, chromosome, b_e[0], b_e[1])
-
                 print("===== finish(del_position) " + chromosome + " " + str(i))
 
             for i, b_e in enumerate(n_position):
-                # f negative_cigar_img = torch.cat((negative_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
                 zoom = 1
                 fail = 1
                 while fail:
@@ -241,20 +215,7 @@ else:
                         print(e)
                         print("Exception cigar_img_single_optimal" + str(zoom))
 
-                    # try:
-                    #     negative_cigar_img[i] = ut.cigar_img_single_optimal_time2sapce(sam_file, chromosome, b_e[0], b_e[1])
-                    # except Exception as e:
-                    #     print(e)
-                    #     print("Exception cigar_img_single_optimal_time2sapce")
-                    #     try:
-                    #         negative_cigar_img[i] = ut.cigar_img_single_optimal_time3sapce(sam_file, chromosome, b_e[0], b_e[1])
-                    #     except Exception as e:
-                    #         print(e)
-                    #         print("Exception cigar_img_single_optimal_time3sapce")
-                    #         negative_cigar_img[i] = ut.cigar_img_single_optimal_time6sapce(sam_file, chromosome, b_e[0], b_e[1])
-
                 print("===== finish(n_position) " + chromosome + " " + str(i))
-            # sam_file.close()
 
             save_path = data_dir + 'image/' + chromosome
             ut.mymkdir(save_path)
@@ -280,12 +241,6 @@ all_ins_img = torch.load(data_dir + '/all_ins_img' + '.pt')
 all_del_img = torch.load(data_dir + '/all_del_img' + '.pt')
 all_n_img = torch.load(data_dir + '/all_n_img' + '.pt')
 
-# all_ins_img = all_ins_cigar_img
-# all_del_img = all_del_cigar_img
-# all_n_img = all_negative_cigar_img
-
-print("loaded")
-
 length = len(all_ins_img) + len(all_del_img) + len(all_n_img)
 
 ut.mymkdir(data_dir + "ins/")
@@ -293,7 +248,7 @@ ut.mymkdir(data_dir + "del/")
 ut.mymkdir(data_dir + "n/")
 
 for index in range(length):
-    print(index)
+    print(f"loaded index = {index}/{length}", end='\r')
     if index < len(all_ins_img):
         image = all_ins_img[index].clone()
         torch.save([image, 2], data_dir + "ins/" + str(index) + ".pt")
@@ -305,3 +260,5 @@ for index in range(length):
         index -= len(all_ins_img) + len(all_del_img)
         image = all_n_img[index].clone()
         torch.save([image, 0], data_dir + "n/" + str(index) + ".pt")
+
+print(f"All images loaded, number = {length}")

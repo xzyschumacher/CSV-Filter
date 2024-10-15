@@ -2,6 +2,7 @@ import argparse
 import os
 import random
 import subprocess
+import concurrent.futures
 
 import numpy as np
 import pandas as pd
@@ -17,9 +18,6 @@ import utilities as ut
 
 
 def parse_args():
-    """
-    :return:进行参数的解析
-    """
     description = "you should add those parameter"
     parser = argparse.ArgumentParser(description=description)
     help = "The path of address"
@@ -27,42 +25,51 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+def process_chromosome(chr, length, cpu_core):
+    command = f"taskset -c {cpu_core} python process_file.py --chr {chr} --len {length}"
+    print(command)
+    subprocess.Popen(command, shell=True).wait()
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 seed_everything(2022)
 
+bam_data_dir = "../data/"
+vcf_data_dir = "../data/"
 
-data_dir = "../data/"
-
-bam_path = data_dir + "sorted_final_merged.bam"
-
-vcf_filename = data_dir + "insert_result_data.csv.vcf"
+bam_path = bam_data_dir + "HG002-PacBio-CLR-minimap2.sorted.bam"
+vcf_filename = vcf_data_dir + "insert_result_data.csv.vcf"
 
 
 sam_file = pysam.AlignmentFile(bam_path, "rb")
-chr_list = sam_file.references
-chr_length = sam_file.lengths
+chr_list_sam_file = sam_file.references
+chr_length_sam_file = sam_file.lengths
 sam_file.close()
+
+allowed_chromosomes = set(f"{i}" for i in range(1, 23)) | {"X", "Y"}
+
+chr_list = []
+chr_length = []
+
+for chrom, length in zip(chr_list_sam_file, chr_length_sam_file):
+    if chrom in allowed_chromosomes:
+        chr_list.append(chrom)
+        chr_length.append(length)
 
 hight = 224
 
 data_list = []
 for chromosome, chr_len in zip(chr_list, chr_length):
-    # if not os.path.exists(data_dir + 'flag/' + chromosome + '.txt'):
     data_list.append((chromosome, chr_len))
 
 args = parse_args()
 thread_num = int(args.thread_num)
 
-for chr, length in data_list:
-    num = len(subprocess.getoutput("ps -aux | grep process_file.py").split('\n'))
-    while num > thread_num:
-        num = len(subprocess.getoutput(
-            "ps -aux | grep process_file.py").split('\n'))
-        # print(num)
-    print("python process_file.py --chr " + chr + " --len " + str(length))
-    # subprocess.call("python create_process_file.py --chr " + chr + " --len " + str(len), shell = True)
-    # fd = open(chr + ".txt")
-    subprocess.Popen("python process_file.py --chr " +
-                     chr + " --len " + str(length), shell=True)
-    # subprocess.Popen("python par.py --chr " + chr + " --len " + str(len), shell=True)
+def worker(chromosome_data, cpu_core):
+    chr, length = chromosome_data
+    process_chromosome(chr, length, cpu_core)
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=thread_num) as executor:
+    futures = []
+    for i, chromosome_data in enumerate(data_list):
+        core_index = i % thread_num 
+        futures.append(executor.submit(worker, chromosome_data, core_index))
+    concurrent.futures.wait(futures)

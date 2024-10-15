@@ -24,17 +24,28 @@ from ray.tune.integration.pytorch_lightning import TuneReportCallback, \
 import list2img
 from hyperopt import hp
 
+bam_data_dir = "../data/"
+vcf_data_dir = "../data/"
 data_dir = "../data/"
-bam_path = data_dir + "sorted_final_merged.bam"
+bam_path = bam_data_dir + "HG002-PacBio-CLR-minimap2.sorted.bam"
 
-ins_vcf_filename = data_dir + "insert_result_data.csv.vcf"
-del_vcf_filename = data_dir + "delete_result_data.csv.vcf"
+ins_vcf_filename = vcf_data_dir + "insert_result_data.csv.vcf"
+del_vcf_filename = vcf_data_dir + "delete_result_data.csv.vcf"
 
-# get chr list
 sam_file = pysam.AlignmentFile(bam_path, "rb")
-chr_list = sam_file.references
-chr_length = sam_file.lengths
+chr_list_sam_file = sam_file.references
+chr_length_sam_file = sam_file.lengths
 sam_file.close()
+
+allowed_chromosomes = set(f"{i}" for i in range(1, 23)) | {"X", "Y"}
+
+chr_list = []
+chr_length = []
+
+for chrom, length in zip(chr_list_sam_file, chr_length_sam_file):
+    if chrom in allowed_chromosomes:
+        chr_list.append(chrom)
+        chr_length.append(length)
 
 
 for chromosome, chr_len in zip(chr_list, chr_length):

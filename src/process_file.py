@@ -13,17 +13,20 @@ from pytorch_lightning.loggers import TensorBoardLogger
 
 import utilities as ut
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 seed_everything(2022)
 
+bam_data_dir = "/media/xzy/HDD_4T_2/DATASETS/Alignment_data/PacBio-CLR/"
+vcf_data_dir = "../data/"
 data_dir = "../data/"
 
-bam_path = data_dir + "sorted_final_merged.bam"
+bam_path = bam_data_dir + "HG002-PacBio-CLR-minimap2.sorted.bam"
+# bam_path = data_dir + "NA12878_S1.bam"
+# bam_path = data_dir + "NA12878_NGMLR_sorted.bam"
 
-ins_vcf_filename = data_dir + "insert_result_data.csv.vcf"
-del_vcf_filename = data_dir + "delete_result_data.csv.vcf"
+ins_vcf_filename = vcf_data_dir + "insert_result_data.csv.vcf"
+del_vcf_filename = vcf_data_dir + "delete_result_data.csv.vcf"
 
 hight = 224
 resize = torchvision.transforms.Resize([hight, hight])
@@ -44,10 +47,10 @@ def position(sum_data):
     set_pos = set()
 
     for pos in row_pos:
-        set_pos.update(range(pos - 100, pos + 100))
+        set_pos.update(range(pos - 1024, pos + 1024))
 
     for pos in row_pos:
-        gap = 112
+        gap = 1024
         # positive
         begin = pos - 1 - gap
         end = pos - 1 + gap
@@ -68,7 +71,7 @@ def position(sum_data):
         row_end.append(row["END"])
 
     for pos in row_pos:
-        set_pos.update(range(pos - 100, pos + 100))
+        set_pos.update(range(pos - 1024, pos + 1024))
 
     for pos, end in zip(row_pos, row_end):
         gap = int((end - pos) / 4)
@@ -122,7 +125,7 @@ def create_image(sum_data):
     n_position = torch.load(data_dir + 'position/' +
                             chromosome + '/negative' + '.pt')
 
-    print("cigar start")
+    print(chromosome + " cigar start")
     save_path = data_dir + 'image/' + chromosome
 
     if os.path.exists(save_path + '/negative_cigar_new_img' + '.pt'):
@@ -133,7 +136,6 @@ def create_image(sum_data):
     negative_cigar_img = torch.empty(len(n_position), 1, hight, hight)
 
     for i, b_e in enumerate(ins_position):
-        # f positive_cigar_img = torch.cat((positive_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
         zoom = 1
         fail = 1
         while fail:
@@ -147,10 +149,9 @@ def create_image(sum_data):
                 print(e)
                 print("Exception cigar_img_single_optimal(ins_position) " + chromosome + " " + str(zoom) + ". The length = ", b_e[1] - b_e[0])
                            
-        print("===== finish(ins_cigar_img) " + chromosome + " " + str(i))
+        print("===== finish_cigar_img(ins_position) " + chromosome + " index = " + str(i) + "/" + str(len(ins_position)))
 
     for i, b_e in enumerate(del_position):
-        # f positive_cigar_img = torch.cat((positive_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
         zoom = 1
         fail = 1
         while fail:
@@ -164,10 +165,9 @@ def create_image(sum_data):
                 print(e)
                 print("Exception cigar_img_single_optimal(del_position) " + chromosome + " " + str(zoom) + ". The length = ", b_e[1] - b_e[0])
             
-        print("===== finish(del_position) " + chromosome + " " + str(i))
+        print("===== finish_cigar_img(del_position) " + chromosome + " index = " + str(i) + "/" + str(len(del_position)))
 
     for i, b_e in enumerate(n_position):
-        # f negative_cigar_img = torch.cat((negative_cigar_img, ut.cigar_img(chromosome_cigar, chromosome_cigar_len, refer_q_table[begin], refer_q_table[end]).unsqueeze(0)), 0)
         zoom = 1
 
         fail = 1
@@ -180,17 +180,17 @@ def create_image(sum_data):
                 fail = 1
                 zoom += 1
                 print(e)
-                print("Exception cigar_img_single_optimal(n_position) " + chromosome + " " + str(zoom) + ". The length = ", b_e[1] - b_e[0])
+                print("Exception cigar_img_single_optimal(neg_position) " + chromosome + " " + str(zoom) + ". The length = ", b_e[1] - b_e[0])
 
 
-        print("===== finish(n_position) " + chromosome + " " + str(i))
+        print("===== finish_cigar_img(neg_position) " + chromosome + " index = " + str(i) + "/" + str(len(n_position)))
         
     ut.mymkdir(save_path)
     torch.save(ins_cigar_img, save_path + '/ins_cigar_new_img' + '.pt')
     torch.save(del_cigar_img, save_path + '/del_cigar_new_img' + '.pt')
     torch.save(negative_cigar_img, save_path +
                '/negative_cigar_new_img' + '.pt')
-    print("cigar end")
+    print(chromosome + " cigar end")
 
 
 def parse_args():
@@ -208,7 +208,5 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    # print(args.chr)
-    # print(type(args.chr))
     position([args.chr, int(args.len)])
     create_image([args.chr, int(args.len)])

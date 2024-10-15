@@ -25,12 +25,10 @@ from ray.tune.integration.pytorch_lightning import TuneReportCallback, \
 import list2img
 from hyperopt import hp
 
-# data_dir = "../datasets/NA12878_PacBio_MtSinai/"
-data_dir = "/home/xwm/DeepSVFilter/datasets/NA12878_PacBio_MtSinai/"
+data_dir = "../data/"
 
 bam_path = data_dir + "sorted_final_merged.bam"
 
-# get chr list
 sam_file = pysam.AlignmentFile(bam_path, "rb")
 chr_list = sam_file.references
 chr_length = sam_file.lengths
@@ -42,10 +40,6 @@ all_n = torch.empty(0, 5, hight, hight)
 
 for chromosome, chr_len in zip(chr_list, chr_length):
     print(chromosome)
-    # ins = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/ins_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/ins_img' + '.pt')[:, 2:3, :, :]), 1)
-    # _del = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/del_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/del_img' + '.pt')[:, 2:3, :, :]), 1)
-    # n = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/negative_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/negative_img' + '.pt')[:, 2:3, :, :]), 1)
-
     ins = torch.load(data_dir + 'image/' + chromosome + '/ins_cigar_new_img' + '.pt')
     _del = torch.load(data_dir + 'image/' + chromosome + '/del_cigar_new_img' + '.pt')
     n = torch.load(data_dir + 'image/' + chromosome + '/negative_cigar_new_img' + '.pt')

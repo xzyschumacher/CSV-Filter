@@ -14,9 +14,8 @@ from PIL import Image
 from torchvision.transforms import ToPILImage
 import utilities as ut
 
-model_name = "mobilenet_v2"
-# mnasnet1_0
-# resnet50
+model_name = "ResNet50x2"
+
 class attention(nn.Module):
     def __init__(self, dim, out_dim):
         super(attention, self).__init__()
@@ -75,7 +74,7 @@ class conv2ds_sequential(nn.Module):
         self.layers = nn.ModuleList(
             nn.Sequential(
                 nn.Conv2d(in_channels=k, out_channels=m, kernel_size=3,
-                          stride=1, padding=1),  # (m, 224, 224)
+                          stride=1, padding=1),
                 nn.BatchNorm2d(m),
                 nn.ReLU(inplace=True),
             ) for k, m in zip(dim1, dim2)
@@ -135,62 +134,40 @@ class IDENet(pl.LightningModule):
 
         # conv2d_dim = [1, 1, 3, 3]
         # self.conv2ds = conv2ds_sequential(conv2d_dim)
-
         # self.conv2RGB = torchvision.transforms.Lambda(lambda x: x.convert("RGB"))
-
         # self.resnet_model = torchvision.models.mnasnet1_0(pretrained=True)
-
-        self.resnet_model = torchvision.models.mobilenet_v2(pretrained=True)
+        # self.resnet_model = torchvision.models.mobilenet_v2(pretrained=True)
         # self.resnet_model = torchvision.models.resnet34(pretrained=True)
         # self.resnet_model = torchvision.models.resnet50(pretrained=True)
-        
         # self.resnet_model = torch.hub.load('facebookresearch/vicreg:main', 'resnet50')
-        # self.resnet_model = torch.hub.load('facebookresearch/vicreg:main', 'resnet50x2')
+        self.resnet_model = torch.hub.load('facebookresearch/vicreg:main', 'resnet50x2')
         # self.resnet_model = torch.hub.load('facebookresearch/vicreg:main', 'resnet200x2')
-
-        # self.resnet_model = torch.load("/home/xzy/Desktop/MSVF/MSVF-test/models/init_resnet50.pt")
-        # self.resnet_model.eval()
-
+        # self.resnet_model = torch.load("/home/xzy/Desktop/CSV-Filter/models/init_resnet34.pt")
+        self.resnet_model.eval()
         # self.resnet_model = eval("torchvision.models." + resnet50)(pretrained=True) # [224, 224] -> 1000
         # self.resnet_model = torch.load(
             # "/home/xwm/DeepSVFilter/code_BIBM/init_resnet50.pt")  # [224, 224] -> 1000
 
-        # full_dim = [2048, 1000, 768, 384, 192, 96, 48, 24, 12, 6]  # test
+        # full_dim = [1000, 768, 384, 192, 96, 48, 24, 12, 6]  # test
+        # self.classification = resnet_attention_classification(full_dim)
+        # full_dim = [2048, 1536, 768, 384, 192, 96, 48, 24, 12, 6]  # test
         # self.classification = resnet_attention_classification(full_dim)
 
         self.softmax = nn.Sequential(
             # nn.Linear(full_dim[-1], 3),
-            # nn.Linear(4096, 3),
+            nn.Linear(4096, 3),
             # nn.Linear(2048, 3),
-            nn.Linear(1000, 3),
+            # nn.Linear(1000, 3),
             nn.Softmax(1)
         )
 
         self.criterion = nn.CrossEntropyLoss()
-        # self.criterion = FocalLoss()  # 样本不平衡loss
 
     def training_validation_step(self, batch, batch_idx):
-        x, y = batch  # x2(length, 12) x: (128*1*224*224)
+        x, y = batch
         del batch
-        
-        # x = torchvision.transforms.ToPILImage(x)
-        # x = x.convert("RGB")
-        # x = torchvision.transforms.ToTensor()(x)
-        #x_img = ToPILImage()(x)
-
-        # x = self.conv2RGB(x_img)
-
-        # print("before conv2ds, x_1 = ",x.size())
-
-        # x = self.conv2ds(x)
-
-        # x1 = self.conv2ds(x1[:, 0:1, :, :]) # test
-        # print("between conv2ds and resnet_model, x_2.size() = ",x.size())
 
         x = self.resnet_model(x)
-
-        # print("after resnet_model, x_3.type() = ",x.type())
-        # print("after resnet_model, x_3.size() = ",x.size())
         
         y_t = torch.empty(len(y), 3).cuda()
         for i, y_item in enumerate(y):
@@ -199,29 +176,20 @@ class IDENet(pl.LightningModule):
             elif y_item == 1:
                 y_t[i] = torch.tensor([0, 1, 0])
             else:
-                # y[i] = 1
                 y_t[i] = torch.tensor([0, 0, 1])
 
-        # y_hat = self.classification(x)
-
-        # y_hat = self.softmax(y_hat)
         y_hat = self.softmax(x)
         loss = self.criterion(y_hat, y_t)
         return loss, y, y_hat
 
     def training_step(self, batch, batch_idx):
         loss, y, y_hat = self.training_validation_step(batch, batch_idx)
-
-        # logs metrics for each training_step,
-        # and the average across the epoch, to the progress bar and logger
         self.log('train_loss', loss, on_step=True,
                  on_epoch=True, prog_bar=True, logger=True)
 
-        # set_trace()
         return {'loss': loss, 'y': y, 'y_hat': torch.argmax(y_hat, dim=1)}
 
     def training_epoch_end(self, output):
-        # set_trace()
         y = []
         y_hat = []
 
@@ -234,33 +202,24 @@ class IDENet(pl.LightningModule):
 
         metric = classification_report(y, y_hat, output_dict=True)
 
-        # train_lr = optimizer.state_dict()['param_groups'][0]['lr']
-
-        # self.log('train_lr', train_lr , on_step=False,
-        #          on_epoch=True, prog_bar=True, logger=True)
-
         self.log('train_mean', metric['accuracy'], on_step=False,
                  on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_macro_f1', metric['macro avg']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_macro_pre', metric['macro avg']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_macro_re', metric['macro avg']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_0_f1', metric['0']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_0_pre', metric['0']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_0_re', metric['0']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_1_f1', metric['1']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_1_pre', metric['1']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_1_re', metric['1']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_2_f1', metric['2']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_2_pre', metric['2']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_2_re', metric['2']['recall'],
@@ -269,11 +228,8 @@ class IDENet(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         loss, y, y_hat = self.training_validation_step(batch, batch_idx)
 
-        # logs metrics for each training_step,
-        # and the average across the epoch, to the progress bar and logger
         self.log('validation_loss', loss, on_step=True,
                  on_epoch=True, prog_bar=True, logger=True)
-        # set_trace()
 
         return {'y': y, 'y_hat': torch.argmax(y_hat, dim=1)}
 
@@ -293,25 +249,21 @@ class IDENet(pl.LightningModule):
         self.log('validation_mean', metric['accuracy'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('validation_macro_f1', metric['macro avg']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_macro_pre', metric['macro avg']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_macro_re', metric['macro avg']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_0_f1', metric['0']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_0_pre', metric['0']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_0_re', metric['0']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_1_f1', metric['1']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_1_pre', metric['1']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_1_re', metric['1']['recall'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # self.log('train_2_f1', metric['2']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_2_pre', metric['2']['precision'],
                  on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_2_re', metric['2']['recall'],
@@ -322,57 +274,11 @@ class IDENet(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         loss, y, y_hat = self.training_validation_step(batch, batch_idx)
 
-        # logs metrics for each training_step,
-        # and the average across the epoch, to the progress bar and logger
-        # self.log('validation_loss', loss, on_step=True,
-        #          on_epoch=True, prog_bar=True, logger=True)
         self.log('test_loss', loss, on_step=True,
                  on_epoch=True, prog_bar=True, logger=True)
-        # set_trace()
 
         return {'y': y, 'y_hat': y_hat}
 
-    # def test_epoch_end(self, output):
-    #     y = []
-    #     y_hat = []
-
-    #     for out in output:
-    #         y.extend(out['y'])
-    #         y_hat.extend(out['y_hat'])
-
-    #     y = torch.tensor(y).reshape(-1)
-    #     y_hat = torch.tensor(y_hat).reshape(-1)
-
-    #     metric = classification_report(y, y_hat, output_dict=True)
-
-    #     self.log('test_mean', metric['accuracy'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-
-    #     # self.log('validation_macro_f1', metric['macro avg']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_macro_pre', metric['macro avg']['precision'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_macro_re', metric['macro avg']['recall'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-
-    #     # self.log('train_0_f1', metric['0']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_0_pre', metric['0']['precision'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_0_re', metric['0']['recall'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-
-    #     # self.log('train_1_f1', metric['1']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_1_pre', metric['1']['precision'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_1_re', metric['1']['recall'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-
-    #     # self.log('train_2_f1', metric['2']['f1-score'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_2_pre', metric['2']['precision'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-    #     self.log('test_2_re', metric['2']['recall'],
-    #              on_step=False, on_epoch=True, prog_bar=True, logger=True)
-
-    #     tune.report(test_mean=metric['accuracy'])
 
     def test_epoch_end(self, output):
         torch.save(output, "result.pt")
@@ -385,16 +291,10 @@ class IDENet(pl.LightningModule):
         )
         transformRPG = torchvision.transforms.Compose([
             torchvision.transforms.ToPILImage(),
-            #convert("RGB"),
             torchvision.transforms.Lambda(lambda x: x.convert('RGB')),
-            # torchvision.transforms.RandomResizedCrop(224),
-            # torchvision.transforms.RandomHorizontalFlip(),
-            # torchvision.transforms.RandomApply([color_jitter], p=0.8),
-            # torchvision.transforms.RandomGrayscale(p=0.2),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize([0.485, 0.458, 0.406], [0.229, 0.224, 0.225])
-        ]) #TODO
-        # input_data = ut.IdentifyDataset(self.path)
+        ]) 
         input_data = ut.IdentifyDataset(self.path, transform=transformRPG)
         print(type(input_data))
         dataset_size = len(input_data)
@@ -402,12 +302,11 @@ class IDENet(pl.LightningModule):
         split = int(np.floor(train_proportion * dataset_size))
         random.seed(10)
         random.shuffle(indices)
-        train_indices, test_indices = indices[:split], indices[split:]
+        train_indices, test_indices = indices[:split], indices
         self.train_dataset = Subset(input_data, train_indices)
         self.test_dataset = Subset(input_data, test_indices)
 
     def train_dataloader(self):
-        # sampler=self.wsampler)
         return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=int(cpu_count()), shuffle=True)
 
     def val_dataloader(self):
@@ -416,15 +315,8 @@ class IDENet(pl.LightningModule):
     def test_dataloader(self):
         return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=int(cpu_count()))
 
-    # @property
-    # def automatic_optimization(self):
-    #     return False
 
     def configure_optimizers(self):
         opt_e = torch.optim.Adam(
             filter(lambda p : p.requires_grad, self.parameters()), lr=self.lr, betas=(self.beta1, self.beta2), weight_decay=self.weight_decay)
-            # self.classification.parameters(), lr=self.lr, betas=(self.beta1, self.beta2), weight_decay=self.weight_decay)
-        # opt_d = torch.optim.Adam(
-        #     self.line.parameters(), lr=self.lr, betas=(self.beta1, 0.999))
-
         return [opt_e]
